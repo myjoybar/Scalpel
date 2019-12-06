@@ -12,6 +12,10 @@ public class Constant {
   public static final String LOG_TRACE_METHOD_ANNOTATION = "Lme/joy/scalpel/annotation/LogTrace;";
   public static final String METHOD_COST_TIME_HELPER_CLASS_OWNER = "me/joy/scalpel/helper/MethodCostTimeHelper";
 
+  public static final String METHOD_VIEW_CLICK_DESC = "(Landroid/view/View;)V";
+  public static final String METHOD_VIEW_CLICK_NAME = "onClick";
+
+
 
   public static final Object OBJECT = new Object();
 

@@ -3,7 +3,7 @@ package me.joy.scalpelplugin.utils;
 /**
  * Created by Joy on 2019-08-14
  */
-public class LogUtils {
+public class L {
 
   private static final String TAG = "ScalpelPlugin";
 

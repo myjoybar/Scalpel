@@ -32,11 +32,16 @@ public class ConfigHelper {
     return getScalpelExtension().isEnable();
   }
 
+
   public boolean isEnableLog() {
     return getScalpelExtension().isEnableLog() && isEnable();
   }
 
-  public boolean isEnableMethodTrack() {
-    return getScalpelExtension().isEnableMethodTrack() && isEnable();
+  public boolean isEnableMethodTrace() {
+    return getScalpelExtension().isEnableMethodTrace() && isEnable();
+  }
+
+  public boolean isEnableViewClickTrace() {
+    return getScalpelExtension().isEnableViewClickTrace() && isEnable();
   }
 }

@@ -4,29 +4,17 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import me.joy.scalpel.annotation.LogTrace;
-import me.joy.scalpel.annotation.Scalpel;
 
-@Scalpel
 public class MainActivityPlugin extends AppCompatActivity {
 
   public static String TAG = "MainActivityPlugin";
-
-  View view1;
-  View view2;
-  View view3;
-  ImageView imv1;
-  LinearLayout linearLayout;
-
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
-
-    findViewById(R.id.btn).setOnClickListener(new OnClickListener() {
+    findViewById(R.id.btn_start).setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View view) {
         logMethod1();
@@ -35,12 +23,18 @@ public class MainActivityPlugin extends AppCompatActivity {
         new Test().test3(1,2l,"ssss",true);
       }
     });
+
+    findViewById(R.id.btn_test).setOnClickListener(new OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        Log.i(TAG, "点击btn_test");
+      }
+    });
   }
 
 
   @LogTrace(traceSpendTime = false, level = 5)
   private void logMethod1() {
-
     Log.i(TAG, "执行 logMethod1");
     try {
       Thread.sleep(1000);

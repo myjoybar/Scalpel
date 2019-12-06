@@ -1,13 +1,16 @@
 package me.joy.scalpel.helper;
 
+import android.view.View;
 import me.joy.scalpel.data.MethodInfo;
 
 /**
  * Created by Joy on 2019-11-25
  */
-public interface ScalpelExecutorDelegate {
+public interface ScalpelDelegateService {
 
   void printMethod(MethodInfo methodInfo);
 
   void log(String tag, String msg, int logLevel);
+
+  void enterViewClick(View view);
 }

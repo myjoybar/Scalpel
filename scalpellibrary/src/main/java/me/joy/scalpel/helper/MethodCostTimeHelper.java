@@ -8,11 +8,11 @@ import java.util.Map;
  */
 public class MethodCostTimeHelper {
 
-  public static Map<String, Long> METHOD_START_MAP = new HashMap<>();
-  public static Map<String, Long> METHOD_END_MAP = new HashMap<>();
-  public static String LOG_EXECUTION = " execution ";
-  public static String LOG_COST_TIME = "cost time：";
-  public static String LOG_COST_MS = "ms";
+  public static final Map<String, Long> METHOD_START_MAP = new HashMap<>();
+  public static final Map<String, Long> METHOD_END_MAP = new HashMap<>();
+  public static final String LOG_EXECUTION = " execution ";
+  public static final String LOG_COST_TIME = "cost time：";
+  public static final String LOG_COST_MS = "ms";
 
 
   public static String combineLogStrInfo(String methodName, boolean traceSpendTime,

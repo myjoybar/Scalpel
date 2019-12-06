@@ -1,7 +1,6 @@
 package me.joy.scalpelasm;
 
 import android.os.Bundle;
-import android.util.Log;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity {
@@ -12,7 +11,6 @@ public class MainActivity extends AppCompatActivity {
     setContentView(R.layout.activity_main);
 
   }
-
 
 
 }

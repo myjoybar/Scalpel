@@ -1,22 +1,23 @@
 package me.joy.scalpelasm;
 
 import android.util.Log;
-import me.joy.scalpel.helper.MethodCostTimeHelper;
+import android.view.View;
 import me.joy.scalpel.helper.MethodInfoTimeHelper;
+import me.joy.scalpel.helper.ScalpelManager;
 
 /**
  * Created by Joy on 2019-11-22
  */
 public class Test {
-
-  public void test1() {
-    MethodCostTimeHelper.addStartTime(false, "aaaaaaa");
-
-    MethodCostTimeHelper.addEndTime(true, "bbbbbbbb");
-
-    Log.v("TAGTAG", MethodCostTimeHelper.combineLogStrInfo("CCCCCCC", true, "DDDDDDD"));
-
-  }
+//
+//  public void test1() {
+//    MethodCostTimeHelper.addStartTime(false, "aaaaaaa");
+//
+//    MethodCostTimeHelper.addEndTime(true, "bbbbbbbb");
+//
+//    Log.v("TAGTAG", MethodCostTimeHelper.combineLogStrInfo("CCCCCCC", true, "DDDDDDD"));
+//
+//  }
 
 
 //  public void test2() {
@@ -24,7 +25,7 @@ public class Test {
 //
 //    MethodCostTimeHelper.addEndTime(true, "bbbbbbbb");
 //
-//    ScalpelManager.getScalpelExecutorDelegate()
+//    ScalpelManager.getScalpelDelegateService()
 //        .log("TAGTAG", MethodCostTimeHelper.combineLogStrInfo("CCCCCCC", true, "DDDDDDD"), 2222);
 //  }
 
@@ -34,6 +35,37 @@ public class Test {
     MethodInfoTimeHelper.addMethodInfo(iiiiiii, llllll, ssssss, blblblblbl);
 
   }
+
+  public void test4(int iiiiiii, Long llllll, String ssssss, boolean blblblblbl) {
+
+    MethodInfoTimeHelper.addMethodInfo(iiiiiii, llllll, ssssss, blblblblbl);
+
+  }
+
+  public void test5(View view) {
+
+    ScalpelManager.getScalpelDelegateService().enterViewClick(view);
+
+  }
+  public void test6() {
+
+    long startTime = System.nanoTime();
+    long startTime2 = System.currentTimeMillis();
+    String str = "Test String";
+    long duration = System.nanoTime() - startTime;
+    Log.d("AAAAA","Cost time: "+duration);
+
+  }
+
+  public void test7() {
+
+    //ScalpelManager.getScalpelDelegateService().log("AAAA","BBBBB",5);
+    Log.d("AAAA","BBBBB");
+
+  }
+
+
+
 
 
 }

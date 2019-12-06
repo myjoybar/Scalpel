@@ -1,4 +1,4 @@
-package me.joy.scalpelplugin.logger;
+package me.joy.scalpelplugin.viewclick;
 
 import com.android.build.api.transform.DirectoryInput;
 import com.android.build.api.transform.Format;
@@ -18,9 +18,9 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Set;
 import me.joy.scalpelplugin.extention.ConfigHelper;
-import me.joy.scalpelplugin.logger.visitor.LogClassVisitor;
 import me.joy.scalpelplugin.utils.L;
 import me.joy.scalpelplugin.utils.TransformUtils;
+import me.joy.scalpelplugin.viewclick.visitor.ViewClickClassVisitor;
 import org.apache.commons.io.FileUtils;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
@@ -28,9 +28,9 @@ import org.objectweb.asm.ClassWriter;
 /**
  * Created by Joy on 2019-08-14
  */
-public class AutoLoggerTransform extends Transform {
+public class ViewClickTransform extends Transform {
 
-  private static final String TAG = "AutoLoggerTransform";
+  private static final String TAG = "ViewClickTransform";
 
   @Override
   public String getName() {
@@ -60,10 +60,10 @@ public class AutoLoggerTransform extends Transform {
   public void transform(TransformInvocation transformInvocation)
       throws IOException {
 
-    boolean enableLog = ConfigHelper.getInstance().isEnableLog();
-    L.print(TAG, "transform：  The enableLog is：" + enableLog);
-    if (enableLog) {
-      L.print(TAG, "transform：  start");
+    boolean enableViewClickTrace = ConfigHelper.getInstance().isEnableViewClickTrace();
+    L.print(TAG, "transform： The enableViewClickTrace is：" + enableViewClickTrace);
+    if (enableViewClickTrace) {
+      L.print(TAG, "transform： start");
       long startTime = System.currentTimeMillis();
       //当前是否是增量编译
       boolean isIncremental = transformInvocation.isIncremental();
@@ -83,7 +83,7 @@ public class AutoLoggerTransform extends Transform {
         loopDirectoryInput(input, outputProvider);
       }
       long cost = (System.currentTimeMillis() - startTime);
-      L.print(TAG, "transform： en cost ：" + cost + " ms ");
+      L.print(TAG, "transform： end cost ：" + cost + " ms ");
     } else {
 
       TransformUtils.outputOrigin(transformInvocation);
@@ -100,6 +100,7 @@ public class AutoLoggerTransform extends Transform {
           jarInput.getContentTypes(),
           jarInput.getScopes(),
           Format.JAR);
+      L.print(TAG, "loopJarInput： jarInput.getFile().getName() = " + jarInput.getFile().getName());
       //将修改过的字节码copy到dest
       FileUtils.copyFile(jarInput.getFile(), dest);
     }
@@ -111,14 +112,13 @@ public class AutoLoggerTransform extends Transform {
    */
   private void loopDirectoryInput(TransformInput input, TransformOutputProvider outputProvider)
       throws IOException {
-
     for (DirectoryInput directoryInput : input.getDirectoryInputs()) {
       L.print(TAG, "loopDirectoryInput： dir = " + Arrays
           .toString(directoryInput.getFile().listFiles()));
       File dest = outputProvider.getContentLocation(directoryInput.getName(),
           directoryInput.getContentTypes(), directoryInput.getScopes(),
           Format.DIRECTORY);
-      //将修改过的字节码copy到dest，
+      //将修改过的字节码copy到dest
       transformDir(directoryInput.getFile(), dest);
     }
   }
@@ -133,11 +133,14 @@ public class AutoLoggerTransform extends Transform {
     String destDirPath = dest.getAbsolutePath();
     L.print(TAG, "transformDir： dir = " + srcDirPath + ", " + destDirPath);
     for (File file : input.listFiles()) {
+
       String destFilePath = file.getAbsolutePath().replace(srcDirPath, destDirPath);
       File destFile = new File(destFilePath);
       if (file.isDirectory()) {
+        L.print(TAG, "transformDir：is Directory Name = " + file.getName());
         transformDir(file, destFile);
       } else if (file.isFile()) {
+        L.print(TAG, "transformDir：is file Name = " + file.getName());
         FileUtils.touch(destFile);
         transformSingleFile(file, destFile);
       }
@@ -154,7 +157,7 @@ public class AutoLoggerTransform extends Transform {
       FileInputStream is = new FileInputStream(input);
       ClassReader cr = new ClassReader(is);
       ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_FRAMES);
-      LogClassVisitor adapter = new LogClassVisitor(cw);
+      ViewClickClassVisitor adapter = new ViewClickClassVisitor(cw);
       cr.accept(adapter, 0);
       FileOutputStream fos = new FileOutputStream(dest);
       fos.write(cw.toByteArray());

@@ -5,15 +5,16 @@ package me.joy.scalpel.helper;
  */
 public class ScalpelManager {
 
-  static ScalpelExecutorDelegate defaultScalpelExecutorDelegate = new ScalpelExecutorDelegateImpl();
+  static ScalpelDelegateService defaultScalpelDelegateService = new ScalpelDelegateImpl();
 
-  public static ScalpelExecutorDelegate getScalpelExecutorDelegate() {
-    return defaultScalpelExecutorDelegate;
+  //getScalpelDelegateService
+  public static ScalpelDelegateService getScalpelDelegateService() {
+    return defaultScalpelDelegateService;
   }
 
-  public static  void setScalpelExecutorDelegate(
-      ScalpelExecutorDelegate scalpelExecutorDelegate) {
-   defaultScalpelExecutorDelegate = scalpelExecutorDelegate;
+  public static  void setScalpelDelegateService(
+      ScalpelDelegateService scalpelDelegateService) {
+    defaultScalpelDelegateService = scalpelDelegateService;
   }
 
 

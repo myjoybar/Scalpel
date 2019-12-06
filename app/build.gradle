@@ -26,8 +26,8 @@ dependencies {
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     implementation project(path: ':scalpellibrary')
+    implementation 'com.google.code.gson:gson:2.8.6'
 }
-
 
 //
 apply plugin: 'scalpel-plugin' // scalpel_plugin.properties
@@ -35,5 +35,5 @@ apply plugin: 'scalpel-plugin' // scalpel_plugin.properties
 ScalpelConfig {
     enable true
     enableLog true
-    enableMethodTrack false
+//    enableMethodTrace false
 }

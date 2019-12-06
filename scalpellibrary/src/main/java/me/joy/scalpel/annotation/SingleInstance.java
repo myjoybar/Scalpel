@@ -10,8 +10,6 @@ import java.lang.annotation.Target;
  */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface MethodTrack {
-    boolean isTrackParameter() default true;
-    String properties() default "";
+public @interface SingleInstance {
 
 }

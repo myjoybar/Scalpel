@@ -11,12 +11,12 @@ public class MethodArgumentUtils {
   private final static String TAG = "MethodArgumentUtils";
 
   public static char[] parseMethodArguments(String desc) {
-    LogUtils.print(TAG, "parseMethodArguments ,desc = " + desc );
+    L.print(TAG, "parseMethodArguments ,desc = " + desc );
     String[] splitDesc = splitMethodDesc(desc);
 
 
     char[] returnChars = new char[splitDesc.length];
-    LogUtils.print(TAG, "parseMethodArguments ,returnChars.length = " + returnChars.length );
+    L.print(TAG, "parseMethodArguments ,returnChars.length = " + returnChars.length );
     int count = 0;
     for(String type : splitDesc) {
       if(type.startsWith("L") || type.startsWith("[")) {
@@ -63,10 +63,10 @@ public class MethodArgumentUtils {
   public static void  parseMethod(String description){
     Type[] argTypes = Type.getArgumentTypes(description);
     int size = argTypes.length;
-    LogUtils.print(TAG, "parseMethod ,size = " + size );
+    L.print(TAG, "parseMethod ,size = " + size );
     for (int i = 0; i <size ; i++) {
       Type type = argTypes[i];
-      LogUtils.print(TAG, "parseMethod ,i = " + i +", type = "+ type +", type.toString = "+ type.toString()+", type.getClassName = "+ type.getClassName());
+      L.print(TAG, "parseMethod ,i = " + i +", type = "+ type +", type.toString = "+ type.toString()+", type.getClassName = "+ type.getClassName());
     }
     if (size >= 0) {
 

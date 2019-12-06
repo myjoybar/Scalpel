@@ -37,7 +37,7 @@ public class TransformUtils {
             jarInput.getContentTypes(),
             jarInput.getScopes(),
             Format.JAR);
-        //将修改过的字节码copy到dest，就可以实现编译期间干预字节码的目的了
+        //将修改过的字节码copy到dest
         FileUtils.copyFile(jarInput.getFile(), dest);
       }
 

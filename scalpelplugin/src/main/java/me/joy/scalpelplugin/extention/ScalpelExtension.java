@@ -5,9 +5,10 @@ package me.joy.scalpelplugin.extention;
  */
 public class ScalpelExtension {
 
-  private boolean enable = true;
+  private boolean enable = true; // the master switch
   private boolean enableLog = true;
-  private boolean enableMethodTrack = true;
+  private boolean enableMethodTrace = true;
+  private boolean enableViewClickTrace = true;
 
   public void enable(boolean enable) {
     this.enable = enable;
@@ -26,14 +27,20 @@ public class ScalpelExtension {
     return enableLog;
   }
 
-  public void enableMethodTrack(boolean enableMethodTrack) {
-    this.enableMethodTrack = enableMethodTrack;
+  public void enableMethodTrace(boolean enableMethodTrace) {
+    this.enableMethodTrace = enableMethodTrace;
   }
 
-  public boolean isEnableMethodTrack() {
-    return enableMethodTrack;
+  public boolean isEnableMethodTrace() {
+    return enableMethodTrace;
   }
 
+  public void enableViewClickTrace(boolean enableViewClickTrace) {
+    this.enableViewClickTrace = enableViewClickTrace;
+  }
 
+  public boolean isEnableViewClickTrace() {
+    return enableViewClickTrace;
+  }
 
 }

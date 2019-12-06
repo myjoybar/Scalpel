@@ -1,4 +1,4 @@
-package me.joy.scalpelplugin.logger.visitor;
+package me.joy.scalpelplugin.viewclick.visitor;
 
 import me.joy.scalpelplugin.logger.data.LogAnnotationInfo;
 import me.joy.scalpelplugin.utils.L;
@@ -7,16 +7,16 @@ import org.objectweb.asm.AnnotationVisitor;
 /**
  * Created by Joy on 2019-08-16
  */
-public class LogAnnotationVisitor extends AnnotationVisitor {
+public class ViewClickAnnotationVisitor extends AnnotationVisitor {
 
-  private final static String TAG = "LogAnnotationVisitor";
+  private final static String TAG = "ViewClickAnnotationVisitor";
   private final static String NAME_LEVEL = "level";
   private final static String NAME_TRACESPEND_TIME = "traceSpendTime";
 
   private LogAnnotationInfo logAnnotationInfo;
 
 
-  public LogAnnotationVisitor(int api, LogAnnotationInfo logAnnotationInfo) {
+  public ViewClickAnnotationVisitor(int api, LogAnnotationInfo logAnnotationInfo) {
     super(api);
     this.logAnnotationInfo = logAnnotationInfo;
   }
