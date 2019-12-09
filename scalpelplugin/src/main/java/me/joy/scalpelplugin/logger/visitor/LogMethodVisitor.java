@@ -1,7 +1,6 @@
 package me.joy.scalpelplugin.logger.visitor;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
 import me.joy.scalpelplugin.Constant;
 import me.joy.scalpelplugin.logger.data.LogAnnotationInfo;
 import me.joy.scalpelplugin.utils.L;
@@ -9,6 +8,7 @@ import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.Type;
 
 /**
  * Created by Joy on 2019-08-16
@@ -24,7 +24,9 @@ public class LogMethodVisitor extends MethodVisitor {
   private String desc;
   private String signature;
   private int argStartIndex = 0;
-  private List<String> argList = new ArrayList<>(0);
+  private String[] argList;
+  private boolean isStatic;
+  private  int argsCount;
 
 
   private LogAnnotationInfo logAnnotationInfo;
@@ -41,18 +43,25 @@ public class LogMethodVisitor extends MethodVisitor {
   public LogMethodVisitor(MethodVisitor oriMv, int access, String className, String methodName,
       String desc, String signature) {
 //      super(Opcodes.ASM5);
-
     super(Opcodes.ASM5, oriMv);
     this.access = access;
     this.className = className;
     this.methodName = methodName;
     this.desc = desc;
     this.signature = signature;
-
+    argsCount = Type.getArgumentTypes(desc).length;
+    argList = new String[argsCount];
 
   }
 
+  //多次调用
+  @Override
+  public void visitParameter(String name, int access) {
+    L.print("visitParameter： name: " + name + " access=" + access);
+    super.visitParameter(name, access);
+  }
 
+  //调用一次
   @Override
   public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
     //check method for annotation
@@ -81,6 +90,9 @@ public class LogMethodVisitor extends MethodVisitor {
   public void visitCode() {
     super.visitCode();
     L.print(TAG, "visitCode：  methodName " + methodName);
+    L.print(TAG, "visitCode：  argsCount " + argsCount);
+    isStatic = (access & Opcodes.ACC_STATIC) != 0;
+
     if (handleMethodAnnotation()) {
       L.print(TAG, "visitCode： logAnnotationInfo " + logAnnotationInfo.toString());
 
@@ -92,18 +104,6 @@ public class LogMethodVisitor extends MethodVisitor {
     }
 
   }
-
-  @Override
-  public void visitLocalVariable(String name, String desc, String signature, Label start, Label end,
-      int index) {
-//    L.print(TAG, "visitLocalVariable： " + String.format("desc = %s, name = %s", desc, name));
-    String argName = name;
-    if (!"this".equals(argName)) {
-      argList.add(argName);
-    }
-
-  }
-
 
   @Override
   public void visitInsn(int opcode) {
@@ -144,14 +144,28 @@ public class LogMethodVisitor extends MethodVisitor {
 
   }
 
+
   @Override
-  public void visitParameter(String name, int access) {
-    L.print("visitParameter： name: " + name + " access=" + access);
-    super.visitParameter(name, access);
+  public void visitLocalVariable(String name, String desc, String signature, Label start, Label end,
+      int index) {
+//    L.print(TAG, "visitLocalVariable： " + String.format("desc = %s, name = %s", desc, name));
+
+//    String argName = name;
+//    if (!"this".equals(argName)) {
+//      argList.add(argName);
+//    }
+
+    int methodParameterIndex = isStatic ? index : index - 1;
+    if (0 <= methodParameterIndex && methodParameterIndex < argsCount) {
+     // argList[methodParameterIndex] = name;
+    }
+    super.visitLocalVariable(name, desc, signature, start, end, index);
   }
+
 
   @Override
   public void visitEnd() {
+    L.print(TAG, "visitEnd： " + "argList  = " + Arrays.toString(argList));
     super.visitEnd();
   }
 

@@ -13,4 +13,6 @@ public interface ScalpelDelegateService {
   void log(String tag, String msg, int logLevel);
 
   void enterViewClick(View view);
+
+//  boolean isFastClick(View view);
 }

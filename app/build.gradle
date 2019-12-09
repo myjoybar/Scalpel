@@ -35,5 +35,5 @@ apply plugin: 'scalpel-plugin' // scalpel_plugin.properties
 ScalpelConfig {
     enable true
     enableLog true
-//    enableMethodTrace false
+    // enableViewClickTrace true
 }

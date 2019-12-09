@@ -7,10 +7,8 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import java.util.ArrayList;
 import java.util.List;
-import me.joy.scalpel.helper.ScalpelManager;
 import me.joy.scalpel.helper.viewclick.TrackConfigData;
 import me.joy.scalpel.helper.viewclick.TrackConfigManager;
-import me.joy.scalpelasm.ScalpelExecutorDelegate;
 
 
 /**
@@ -23,7 +21,7 @@ public class AopApplication extends Application {
   public void onCreate() {
     super.onCreate();
     initTrackConfig();
-    ScalpelManager.setScalpelDelegateService(new ScalpelExecutorDelegate());
+    //ScalpelManager.setScalpelDelegateService(new ScalpelExecutorDelegate());
 
   }
 
@@ -33,7 +31,7 @@ public class AopApplication extends Application {
   }
 
   private static List<TrackConfigData> getTrackConfigData() {
-    String jsonStr = "[{\"className\":\"me.joy.scalpelasm.MainActivityPlugin\",\"resourceEntryNames\":[\"btn_start\"],\"methodNames\":[\"businessTrack1\"]}]";
+    String jsonStr = "[{\"className\":\"me.joy.scalpelasm.MainActivityPlugin\",\"resourceEntryNames\":[\"btn_test1\"],\"methodNames\":[\"businessTrack1\"]}]";
     List<TrackConfigData> trackConfigDataList = getObjectList(jsonStr, TrackConfigData.class);
     return trackConfigDataList;
   }

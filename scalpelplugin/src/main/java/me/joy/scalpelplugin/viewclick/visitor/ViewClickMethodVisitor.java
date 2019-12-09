@@ -35,14 +35,18 @@ public class ViewClickMethodVisitor extends MethodVisitor {
     this.methodName = methodName;
 
   }
+//  //多次调用
+//  @Override
+//  public void visitParameter(String name, int access) {
+//    super.visitParameter(name, access);
+//  }
 
-
+  //调用一次
   @Override
   public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
     //check method for annotation
     return super.visitAnnotation(desc, visible);
   }
-
 
   /**
    * 开始访问方法代码
@@ -52,14 +56,13 @@ public class ViewClickMethodVisitor extends MethodVisitor {
     super.visitCode();
     L.print(TAG, "visitCode：  methodName " + methodName);
     // 方法执行前插入：
-    mv.visitMethodInsn(Opcodes.INVOKESTATIC, "me/joy/scalpel/helper/ScalpelManager",
-        "getScalpelDelegateService", "()Lme/joy/scalpel/helper/ScalpelDelegateService;", false);
-    mv.visitVarInsn(Opcodes.ALOAD, 1);
-    mv
-        .visitMethodInsn(Opcodes.INVOKEINTERFACE, "me/joy/scalpel/helper/ScalpelDelegateService",
-            "enterViewClick", "(Landroid/view/View;)V", true);
+//    mv.visitMethodInsn(Opcodes.INVOKESTATIC, "me/joy/scalpel/helper/ScalpelManager",
+//        "getScalpelDelegateService", "()Lme/joy/scalpel/helper/ScalpelDelegateService;", false);
+//    mv.visitVarInsn(Opcodes.ALOAD, 1);
+//    mv
+//        .visitMethodInsn(Opcodes.INVOKEINTERFACE, "me/joy/scalpel/helper/ScalpelDelegateService",
+//            "enterViewClick", "(Landroid/view/View;)V", true);
   }
-
 
 
   @Override
@@ -71,16 +74,11 @@ public class ViewClickMethodVisitor extends MethodVisitor {
 
   }
 
-  @Override
-  public void visitParameter(String name, int access) {
-    super.visitParameter(name, access);
-  }
 
   @Override
   public void visitEnd() {
     super.visitEnd();
   }
-
 
 
 }

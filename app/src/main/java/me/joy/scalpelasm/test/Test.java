@@ -1,9 +1,7 @@
-package me.joy.scalpelasm;
+package me.joy.scalpelasm.test;
 
 import android.util.Log;
-import android.view.View;
 import me.joy.scalpel.helper.MethodInfoTimeHelper;
-import me.joy.scalpel.helper.ScalpelManager;
 
 /**
  * Created by Joy on 2019-11-22
@@ -41,12 +39,15 @@ public class Test {
     MethodInfoTimeHelper.addMethodInfo(iiiiiii, llllll, ssssss, blblblblbl);
 
   }
-
-  public void test5(View view) {
-
-    ScalpelManager.getScalpelDelegateService().enterViewClick(view);
-
-  }
+//
+//  public void test5(View view) {
+//
+//    if(ScalpelManager.getScalpelDelegateService().isFastClick(view)){
+//      ScalpelManager.getScalpelDelegateService().enterViewClick(view);
+//    }
+//
+//
+//  }
   public void test6() {
 
     long startTime = System.nanoTime();

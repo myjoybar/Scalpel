@@ -10,6 +10,8 @@ import me.joy.scalpel.data.MethodInfo;
  */
 public class ScalpelDelegateImpl implements ScalpelDelegateService {
 
+//  public static long FROZEN_CLICK_MILLIS = 300L;
+
   public static final String TAG = "ScalpelDelegateImpl";
 
   @Override
@@ -39,6 +41,13 @@ public class ScalpelDelegateImpl implements ScalpelDelegateService {
   public void enterViewClick(View view) {
     Log.d(TAG, "enterViewClick");
   }
+
+//  @Override
+//  public boolean isFastClick(View view) {
+//    return DebounceUtils.isFastClick(view);
+//  }
+
+
 
 
 }
