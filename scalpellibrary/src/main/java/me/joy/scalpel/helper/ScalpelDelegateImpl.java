@@ -4,6 +4,7 @@ import android.util.Log;
 import android.view.View;
 import me.joy.scalpel.data.LogLevel;
 import me.joy.scalpel.data.MethodInfo;
+import me.joy.scalpel.helper.viewclick.DebounceUtils;
 
 /**
  * Created by Joy on 2019-11-25
@@ -42,10 +43,16 @@ public class ScalpelDelegateImpl implements ScalpelDelegateService {
     Log.d(TAG, "enterViewClick");
   }
 
-//  @Override
-//  public boolean isFastClick(View view) {
-//    return DebounceUtils.isFastClick(view);
-//  }
+  @Override
+  public boolean isFastClick(View view) {
+    return DebounceUtils.isFastClick(view, getClickFrozenTime());
+  }
+
+  @Override
+  public long getClickFrozenTime() {
+    return 1000;
+  }
+
 
 
 

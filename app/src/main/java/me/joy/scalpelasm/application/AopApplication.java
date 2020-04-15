@@ -1,6 +1,7 @@
 package me.joy.scalpelasm.application;
 
 import android.app.Application;
+import android.content.Context;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -18,10 +19,18 @@ import me.joy.scalpel.helper.viewclick.TrackConfigManager;
 public class AopApplication extends Application {
 
   @Override
+  protected void attachBaseContext(Context base) {
+    super.attachBaseContext(base);
+   // MultiDex.install(this);
+
+  }
+
+
+  @Override
   public void onCreate() {
     super.onCreate();
-    initTrackConfig();
-    //ScalpelManager.setScalpelDelegateService(new ScalpelExecutorDelegate());
+//    initTrackConfig();
+   // ScalpelManager.setScalpelDelegateService(new ScalpelExecutorDelegate());
 
   }
 

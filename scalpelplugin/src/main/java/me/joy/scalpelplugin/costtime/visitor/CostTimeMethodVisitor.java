@@ -1,4 +1,4 @@
-package me.joy.scalpelplugin.costtime;
+package me.joy.scalpelplugin.costtime.visitor;
 
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;

@@ -1,5 +1,7 @@
 package me.joy.scalpelplugin.extention;
 
+import me.joy.scalpelplugin.classmodifier.ClassModification;
+
 /**
  * Created by Joy on 2019-08-15
  */
@@ -9,6 +11,11 @@ public class ScalpelExtension {
   private boolean enableLog = true;
   private boolean enableMethodTrace = true;
   private boolean enableViewClickTrace = true;
+  private boolean enableModification= true;
+  private boolean enableCostTime= true;
+  //private GarbageConfigExtension garbageConfig = new GarbageConfigExtension();
+
+  private ClassModification classModification= new ClassModification();
 
   public void enable(boolean enable) {
     this.enable = enable;
@@ -43,4 +50,32 @@ public class ScalpelExtension {
     return enableViewClickTrace;
   }
 
+  public void enableModification(boolean enableModification) {
+    this.enableLog = enableModification;
+  }
+
+
+  public boolean isEnableModification() {
+    return enableModification;
+  }
+
+
+  public void enableCostTime(boolean enableCostTime) {
+    this.enableLog = enableCostTime;
+  }
+
+
+  public boolean isEnableCostTime() {
+    return enableCostTime;
+  }
+
+
+
+//  public GarbageConfigExtension garbageConfig() {
+//    return garbageConfig;
+//  }
+//
+//  public void garbageConfig(GarbageConfigExtension garbageConfig) {
+//    this.garbageConfig = garbageConfig;
+//  }
 }

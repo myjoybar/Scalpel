@@ -8,15 +8,13 @@ import org.objectweb.asm.Opcodes;
 /**
  * Created by Joy on 2019-08-16
  */
-public class ViewClickMethodVisitor extends MethodVisitor {
+public class ViewClickMethodVisitor extends MethodVisitor implements Opcodes {
 
   private final static String TAG = "ViewClickMethodVisitor";
 
 
   private String methodName;
   private String className;
-
-
 
 
   public ViewClickMethodVisitor(int i) {
@@ -27,19 +25,21 @@ public class ViewClickMethodVisitor extends MethodVisitor {
     super(i, methodVisitor);
   }
 
-  public ViewClickMethodVisitor(MethodVisitor oriMv, int access, String className, String methodName,
+  public ViewClickMethodVisitor(MethodVisitor oriMv, int access, String className,
+      String methodName,
       String desc, String signature) {
-//      super(Opcodes.ASM5);
-    super(Opcodes.ASM5, oriMv);
+//      super( ASM5);
+    super(ASM5, oriMv);
     this.className = className;
     this.methodName = methodName;
 
   }
-//  //多次调用
-//  @Override
-//  public void visitParameter(String name, int access) {
-//    super.visitParameter(name, access);
-//  }
+
+  //多次调用
+  @Override
+  public void visitParameter(String name, int access) {
+    super.visitParameter(name, access);
+  }
 
   //调用一次
   @Override
@@ -56,12 +56,28 @@ public class ViewClickMethodVisitor extends MethodVisitor {
     super.visitCode();
     L.print(TAG, "visitCode：  methodName " + methodName);
     // 方法执行前插入：
-//    mv.visitMethodInsn(Opcodes.INVOKESTATIC, "me/joy/scalpel/helper/ScalpelManager",
+    mv.visitMethodInsn(INVOKESTATIC, "me/joy/scalpel/helper/ScalpelManager",
+        "getScalpelDelegateService", "()Lme/joy/scalpel/helper/ScalpelDelegateService;", false);
+    mv.visitVarInsn(ALOAD, 1);
+    mv
+        .visitMethodInsn(INVOKEINTERFACE, "me/joy/scalpel/helper/ScalpelDelegateService",
+            "enterViewClick", "(Landroid/view/View;)V", true);
+
+
+
+//    mv.visitMethodInsn(INVOKESTATIC, "me/joy/scalpel/helper/ScalpelManager",
 //        "getScalpelDelegateService", "()Lme/joy/scalpel/helper/ScalpelDelegateService;", false);
-//    mv.visitVarInsn(Opcodes.ALOAD, 1);
-//    mv
-//        .visitMethodInsn(Opcodes.INVOKEINTERFACE, "me/joy/scalpel/helper/ScalpelDelegateService",
-//            "enterViewClick", "(Landroid/view/View;)V", true);
+//    mv.visitVarInsn(ALOAD, 1);
+//    mv.visitMethodInsn(INVOKEINTERFACE, "me/joy/scalpel/helper/ScalpelDelegateService",
+//        "isFastClick", "(Landroid/view/View;)Z", true);
+//    Label label1 = new Label();
+//    mv.visitJumpInsn(IFEQ, label1);
+//    mv.visitMethodInsn(INVOKESTATIC, "me/joy/scalpel/helper/ScalpelManager",
+//        "getScalpelDelegateService", "()Lme/joy/scalpel/helper/ScalpelDelegateService;", false);
+//    mv.visitVarInsn(ALOAD, 1);
+//    mv.visitMethodInsn(INVOKEINTERFACE, "me/joy/scalpel/helper/ScalpelDelegateService",
+//        "enterViewClick", "(Landroid/view/View;)V", true);
+
   }
 
 

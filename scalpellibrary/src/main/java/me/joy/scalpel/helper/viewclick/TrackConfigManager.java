@@ -2,6 +2,7 @@ package me.joy.scalpel.helper.viewclick;
 
 import android.util.Log;
 import androidx.annotation.Keep;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -21,14 +22,15 @@ public class TrackConfigManager {
 
   private static Map<String, String> viewTagHashMap = new HashMap<>();
   private static Map<String, String> methodHashMap = new HashMap<>();
+  private static List<TrackConfigData> trackDataList = new ArrayList<>(0);
   public static final String UNDER_LINE = "_";
-
 
 
   public static void intConfig(List<TrackConfigData> trackConfigDataList) {
     if (viewTagHashMap.size() != 0 || methodHashMap.size() != 0) {
       return;
     }
+    trackDataList = trackConfigDataList;
     int size = trackConfigDataList.size();
     Log.d("TrackConfig", Arrays.toString(trackConfigDataList.toArray()));
     for (int i = 0; i < size; i++) {
@@ -63,6 +65,7 @@ public class TrackConfigManager {
 
   }
 
-
-
+  public static List<TrackConfigData> getTrackDataList() {
+    return trackDataList;
+  }
 }

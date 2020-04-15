@@ -7,8 +7,8 @@ package me.joy.scalpelplugin.extention;
 public class ConfigHelper {
 
 
-
   private ScalpelExtension scalpelExtension;
+  private GarbageConfigExtension garbageConfigExtension;
 
 
   public static ConfigHelper getInstance() {
@@ -28,6 +28,15 @@ public class ConfigHelper {
     this.scalpelExtension = scalpelExtension;
   }
 
+  public GarbageConfigExtension getGarbageConfigExtension() {
+    return garbageConfigExtension;
+  }
+
+  public void setGarbageConfigExtension(
+      GarbageConfigExtension garbageConfigExtension) {
+    this.garbageConfigExtension = garbageConfigExtension;
+  }
+
   public boolean isEnable() {
     return getScalpelExtension().isEnable();
   }
@@ -44,4 +53,15 @@ public class ConfigHelper {
   public boolean isEnableViewClickTrace() {
     return getScalpelExtension().isEnableViewClickTrace() && isEnable();
   }
+
+  public boolean isEnableModification() {
+    return getScalpelExtension().isEnableModification() && isEnable();
+  }
+
+  public boolean isEnableCostTime() {
+    return getScalpelExtension().isEnableCostTime() && isEnable();
+  }
+
+
+
 }

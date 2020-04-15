@@ -13,7 +13,7 @@ public class DebounceUtils {
     return isFastClick(target, FROZEN_CLICK__MILLIS);
   }
 
-  public static boolean isFastClick(View target, long internalTime) {
+  public static boolean isFastClick(View target, long frozenTime) {
     long curTimeStamp = System.currentTimeMillis();
     long lastClickTimeStamp = 0;
     Object o = target.getTag(1001);
@@ -22,7 +22,7 @@ public class DebounceUtils {
       return false;
     }
     lastClickTimeStamp = (Long) o;
-    boolean isInvalid = curTimeStamp - lastClickTimeStamp < internalTime;
+    boolean isInvalid = curTimeStamp - lastClickTimeStamp < frozenTime;
     if (!isInvalid) {
       target.setTag(1001, curTimeStamp);
     }

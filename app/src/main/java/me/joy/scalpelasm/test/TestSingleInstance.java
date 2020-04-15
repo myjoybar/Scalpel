@@ -1,4 +1,4 @@
-package me.joy.scalpelasm;
+package me.joy.scalpelasm.test;
 
 /**
  * Created by Joy on 2019-12-02
@@ -13,6 +13,5 @@ public class TestSingleInstance {
 
     private static TestSingleInstance instance = new TestSingleInstance();
   }
-
 
 }

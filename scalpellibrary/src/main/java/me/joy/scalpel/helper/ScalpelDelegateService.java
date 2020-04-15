@@ -14,5 +14,9 @@ public interface ScalpelDelegateService {
 
   void enterViewClick(View view);
 
-//  boolean isFastClick(View view);
+  boolean isFastClick(View view);
+
+  long getClickFrozenTime();
+
+
 }
