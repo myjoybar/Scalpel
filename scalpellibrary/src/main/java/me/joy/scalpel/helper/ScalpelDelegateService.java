@@ -1,7 +1,7 @@
 package me.joy.scalpel.helper;
 
 import android.view.View;
-import me.joy.scalpel.data.MethodInfo;
+import me.joy.scalpel.helper.logger.data.MethodInfo;
 
 /**
  * Created by Joy on 2019-11-25

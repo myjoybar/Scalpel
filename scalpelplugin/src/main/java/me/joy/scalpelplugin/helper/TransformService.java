@@ -137,15 +137,18 @@ public abstract class TransformService {
     FileUtils.forceMkdir(dest);
     String srcDirPath = input.getAbsolutePath();
     String destDirPath = dest.getAbsolutePath();
-    L.print(TAG, "transformDir： dir = " + srcDirPath + ", " + destDirPath);
+    L.print(TAG, "transformDir： srcDirPath = " + srcDirPath);
+    L.print(TAG, "transformDir： destDirPath = " + destDirPath);
     for (File file : input.listFiles()) {
       String destFilePath = file.getAbsolutePath().replace(srcDirPath, destDirPath);
-      File destFile = new File(destFilePath);
       if (file.isDirectory()) {
         L.print(TAG, "transformDir：is Directory Name = " + file.getName());
+        File destFile = new File(destFilePath);
         transformDir(file, destFile);
       } else if (file.isFile()) {
         L.print(TAG, "transformDir：is file Name = " + file.getName());
+        L.print(TAG, "transformDir：is file Name  destFilePath = " + destFilePath);
+        File destFile = new File(destFilePath);
         FileUtils.touch(destFile);
         transformSingleFile(file, destFile);
       }
@@ -164,13 +167,13 @@ public abstract class TransformService {
         FileUtils.copyFile(input, dest);
       } else {
         FileInputStream inputStream = new FileInputStream(input);
-        ClassReader classReader = new ClassReader(inputStream);
+        ClassReader classReader = new ClassReader(inputStream);//创建一个对象，接受一个被修改class类的inputStream，
         ClassWriter classWriter = new ClassWriter(ClassWriter.COMPUTE_FRAMES);
         ClassVisitor classVisitor = getClassVisitor(classWriter);
-        classReader.accept(classVisitor, ClassReader.EXPAND_FRAMES);
+        classReader.accept(classVisitor, ClassReader.EXPAND_FRAMES); //对象cr接受一个cv对象并完成class的修改
 //      classReader.accept(classVisitor, 0);
         FileOutputStream fos = new FileOutputStream(dest);
-        fos.write(classWriter.toByteArray());
+        fos.write(classWriter.toByteArray()); //返回class修改完后生成新的class字节流
         fos.close();
       }
     } catch (IOException e) {

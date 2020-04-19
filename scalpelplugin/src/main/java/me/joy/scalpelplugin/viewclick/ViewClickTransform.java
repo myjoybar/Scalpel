@@ -48,7 +48,6 @@ public class ViewClickTransform extends Transform {
   public void transform(TransformInvocation transformInvocation)
       throws IOException {
 
-
     new TransformService() {
       @Override
       protected ClassVisitor getClassVisitor(ClassWriter classWriter) {
@@ -58,7 +57,12 @@ public class ViewClickTransform extends Transform {
 
       @Override
       protected boolean isIgnoredFiles(String fileName) {
-        return (!fileName.endsWith(".class"));
+        return (
+            !fileName.endsWith(".class")
+                || fileName.equals("BuildConfig.class")
+                || fileName.equals("R.class")
+
+        );
       }
 
       @Override

@@ -7,9 +7,9 @@ import com.android.build.api.transform.TransformInvocation;
 import com.android.build.gradle.internal.pipeline.TransformManager;
 import java.io.IOException;
 import java.util.Set;
-import me.joy.scalpelplugin.costtime.visitor.CostTimeClassVisitor;
 import me.joy.scalpelplugin.extention.ConfigHelper;
 import me.joy.scalpelplugin.helper.TransformService;
+import me.joy.scalpelplugin.logger.visitor.LogClassVisitor;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.ClassWriter;
 
@@ -53,13 +53,18 @@ public class AutoLoggerTransform extends Transform {
 
       @Override
       protected ClassVisitor getClassVisitor(ClassWriter classWriter) {
-        CostTimeClassVisitor classVisitor = new CostTimeClassVisitor(classWriter);
+        LogClassVisitor classVisitor = new LogClassVisitor(classWriter);
         return classVisitor;
       }
 
       @Override
       protected boolean isIgnoredFiles(String fileName) {
-        return (!fileName.endsWith(".class"));
+        return (
+             !fileName.endsWith(".class")
+            || fileName.equals("BuildConfig.class")
+            || fileName.equals("R.class")
+
+        );
       }
 
       @Override

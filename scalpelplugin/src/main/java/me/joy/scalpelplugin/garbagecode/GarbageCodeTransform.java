@@ -57,7 +57,13 @@ public class GarbageCodeTransform extends Transform {
 
       @Override
       protected boolean isIgnoredFiles(String fileName) {
-        return (fileName.contains("$") || !fileName.endsWith(".class"));
+        return (fileName.contains("$")
+            || !fileName.endsWith(".class")
+            || fileName.equals("BuildConfig.class")
+            || fileName.equals("R.class")
+            || fileName.startsWith("R$")
+
+        );
       }
 
       @Override

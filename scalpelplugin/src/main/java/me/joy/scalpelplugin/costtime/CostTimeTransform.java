@@ -58,12 +58,17 @@ public class CostTimeTransform extends Transform {
 
       @Override
       protected boolean isIgnoredFiles(String fileName) {
-        return (fileName.contains("$") || !fileName.endsWith(".class"));
+        return (fileName.contains("$")
+            || !fileName.endsWith(".class")
+            || fileName.equals("BuildConfig.class")
+            || fileName.equals("R.class")
+
+        );
       }
 
       @Override
       protected boolean enable() {
-        return ConfigHelper.getInstance().isEnableCostTime();
+        return ConfigHelper.getInstance().isEnableMethodCostTime();
       }
     }.transform(transformInvocation);
   }

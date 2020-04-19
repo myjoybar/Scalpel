@@ -12,7 +12,7 @@ public class ScalpelExtension {
   private boolean enableMethodTrace = true;
   private boolean enableViewClickTrace = true;
   private boolean enableModification= true;
-  private boolean enableCostTime= true;
+  private boolean enableMethodCostTime= true;
   //private GarbageConfigExtension garbageConfig = new GarbageConfigExtension();
 
   private ClassModification classModification= new ClassModification();
@@ -51,7 +51,7 @@ public class ScalpelExtension {
   }
 
   public void enableModification(boolean enableModification) {
-    this.enableLog = enableModification;
+    this.enableModification = enableModification;
   }
 
 
@@ -60,13 +60,13 @@ public class ScalpelExtension {
   }
 
 
-  public void enableCostTime(boolean enableCostTime) {
-    this.enableLog = enableCostTime;
+  public void enableMethodCostTime(boolean enableMethodCostTime) {
+    this.enableMethodCostTime = enableMethodCostTime;
   }
 
 
-  public boolean isEnableCostTime() {
-    return enableCostTime;
+  public boolean isEnableMethodCostTime() {
+    return enableMethodCostTime;
   }
 
 

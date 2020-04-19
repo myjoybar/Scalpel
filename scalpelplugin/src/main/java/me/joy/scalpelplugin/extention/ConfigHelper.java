@@ -58,8 +58,8 @@ public class ConfigHelper {
     return getScalpelExtension().isEnableModification() && isEnable();
   }
 
-  public boolean isEnableCostTime() {
-    return getScalpelExtension().isEnableCostTime() && isEnable();
+  public boolean isEnableMethodCostTime() {
+    return getScalpelExtension().isEnableMethodCostTime() && isEnable();
   }
 
 

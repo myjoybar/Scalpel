@@ -2,10 +2,9 @@ package me.joy.scalpel.helper;
 
 import android.util.Log;
 import android.view.View;
-import me.joy.scalpel.data.LogLevel;
-import me.joy.scalpel.data.MethodInfo;
+import me.joy.scalpel.helper.logger.data.LogLevel;
+import me.joy.scalpel.helper.logger.data.MethodInfo;
 import me.joy.scalpel.helper.viewclick.DebounceUtils;
-
 /**
  * Created by Joy on 2019-11-25
  */

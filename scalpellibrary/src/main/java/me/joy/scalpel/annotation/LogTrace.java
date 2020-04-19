@@ -4,7 +4,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import me.joy.scalpel.data.LogLevel;
+import me.joy.scalpel.helper.logger.data.LogLevel;
 
 /**
  * Created by joybar on 14/04/2018.

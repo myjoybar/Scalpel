@@ -1,11 +1,11 @@
-package me.joy.scalpel.helper;
+package me.joy.scalpel.helper.logger;
 
 import android.util.Log;
 
 /**
  * Created by Joy on 2019-08-21
  */
-public class MethodInfoTimeHelper {
+public class MethodInfoSaver {
 
   public static void addMethodInfo(Object... args) {
 
@@ -20,6 +20,9 @@ public class MethodInfoTimeHelper {
     }
 
   }
+  public static void addMethodArg(Object obj) {
 
+
+  }
 
 }

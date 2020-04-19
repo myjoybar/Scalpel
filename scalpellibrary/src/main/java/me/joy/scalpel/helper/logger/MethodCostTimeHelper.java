@@ -1,4 +1,4 @@
-package me.joy.scalpel.helper;
+package me.joy.scalpel.helper.logger;
 
 import java.util.HashMap;
 import java.util.Map;

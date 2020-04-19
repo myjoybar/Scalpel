@@ -1,4 +1,4 @@
-package me.joy.scalpel.data;
+package me.joy.scalpel.helper.logger.data;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
