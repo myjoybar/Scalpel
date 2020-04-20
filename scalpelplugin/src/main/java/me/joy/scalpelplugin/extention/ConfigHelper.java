@@ -1,6 +1,8 @@
 package me.joy.scalpelplugin.extention;
 
 
+import java.util.List;
+
 /**
  * 用于保存gradle全局配置 Created by Joy on 2019-08-21
  */
@@ -62,6 +64,9 @@ public class ConfigHelper {
     return getScalpelExtension().isEnableMethodCostTime() && isEnable();
   }
 
+  public List<String> vestModules() {
+    return  getScalpelExtension().vestModules();
+  }
 
 
 }

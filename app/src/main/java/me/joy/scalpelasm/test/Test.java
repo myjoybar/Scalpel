@@ -1,8 +1,6 @@
 package me.joy.scalpelasm.test;
 
-import android.util.Log;
-import android.view.View;
-import me.joy.scalpel.helper.ScalpelManager;
+import me.joy.scalpel.helper.logger.MethodInfoSaver;
 
 /**
  * Created by Joy on 2019-11-22
@@ -34,38 +32,24 @@ public class Test {
 //
 //  }
 //
-//  public void test4(int iiiiiii, Long llllll, String ssssss, boolean blblblblbl) {
+  public void test4(int iiiiiii, Long llllll, String ssssss, boolean blblblblbl,Object object) {
+
+    //MethodInfoSaver.addMethodInfo(iiiiiii, llllll, ssssss, blblblblbl);
+    MethodInfoSaver.addMethodArg(iiiiiii);
+    MethodInfoSaver.addMethodArg(llllll);
+    MethodInfoSaver.addMethodArg(ssssss);
+    MethodInfoSaver.addMethodArg(blblblblbl);
+    MethodInfoSaver.addMethodArg(blblblblbl);
+  }
+
+
+//  public void test5(View view) {
 //
-//    MethodInfoTimeHelper.addMethodInfo(iiiiiii, llllll, ssssss, blblblblbl);
+//    if (ScalpelManager.getScalpelDelegateService().isFastClick(view)) {
+//      ScalpelManager.getScalpelDelegateService().enterViewClick(view);
+//    }
 //
 //  }
-//
-//
-  public void test5(View view) {
-
-    if (ScalpelManager.getScalpelDelegateService().isFastClick(view)) {
-      ScalpelManager.getScalpelDelegateService().enterViewClick(view);
-    }
-
-
-  }
-
-  public void test6() {
-
-    long startTime = System.nanoTime();
-    long startTime2 = System.currentTimeMillis();
-    String str = "Test String";
-    long duration = System.nanoTime() - startTime;
-    Log.d("AAAAA", "Cost time: " + duration);
-
-  }
-
-  public void test7() {
-
-    //ScalpelManager.getScalpelDelegateService().log("AAAA","BBBBB",5);
-    Log.d("AAAA", "BBBBB");
-
-  }
 
 
 }

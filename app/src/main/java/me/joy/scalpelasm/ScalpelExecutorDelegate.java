@@ -8,7 +8,7 @@ import me.joy.scalpel.helper.viewclick.MarkViewUtils;
 /**
  * Created by Joy on 2019-12-05
  */
-public class ScalpelExecutorDelegate  extends ScalpelDelegateImpl {
+public class ScalpelExecutorDelegate extends ScalpelDelegateImpl {
 
   @Override
   public void enterViewClick(View view) {

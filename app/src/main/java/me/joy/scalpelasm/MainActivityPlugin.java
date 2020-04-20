@@ -68,6 +68,10 @@ public class MainActivityPlugin extends AppCompatActivity  {
     return 0;
   }
 
+  @LogTrace(level = 2)
+  private static int testMethod4_static(int iiiiiii, int iiiiiii2, String ssssss, boolean bl) {
+    return 0;
+  }
 
 
   @Override

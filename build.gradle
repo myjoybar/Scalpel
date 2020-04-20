@@ -18,7 +18,7 @@ buildscript {
         // in the individual module build.gradle files
 
         classpath 'me.joy.scalpel:scalpelplugin:1.0.0'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.3.40"
+       // classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.3.40"
     }
 }
 

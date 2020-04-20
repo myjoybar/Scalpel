@@ -32,6 +32,9 @@ out/
 .gradle/
 build/
 
+
+repo/
+
 # Local configuration file (sdk path, etc)
 local.properties
 

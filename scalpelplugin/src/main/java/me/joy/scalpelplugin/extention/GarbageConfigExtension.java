@@ -33,6 +33,7 @@ public class GarbageConfigExtension implements Serializable {
   }
 
 
+
   public boolean isEnableGarbageCode() {
     return enableGarbageCode && ConfigHelper.getInstance().isEnable();
   }

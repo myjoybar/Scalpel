@@ -30,7 +30,7 @@ public class AopApplication extends Application {
   public void onCreate() {
     super.onCreate();
 //    initTrackConfig();
-   // ScalpelManager.setScalpelDelegateService(new ScalpelExecutorDelegate());
+   // ScalpelManager.setScalpelDelegateService(new AAAScalpelExecutorDelegate());
 
   }
 
@@ -40,7 +40,7 @@ public class AopApplication extends Application {
   }
 
   private static List<TrackConfigData> getTrackConfigData() {
-    String jsonStr = "[{\"className\":\"me.joy.scalpelasm.MainActivityPlugin\",\"resourceEntryNames\":[\"btn_test1\"],\"methodNames\":[\"businessTrack1\"]}]";
+    String jsonStr = "[{\"className\":\"me.joy.scalpelasm.AAAMainActivityPlugin\",\"resourceEntryNames\":[\"btn_test1\"],\"methodNames\":[\"businessTrack1\"]}]";
     List<TrackConfigData> trackConfigDataList = getObjectList(jsonStr, TrackConfigData.class);
     return trackConfigDataList;
   }

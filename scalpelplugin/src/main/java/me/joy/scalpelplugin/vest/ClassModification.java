@@ -1,4 +1,4 @@
-package me.joy.scalpelplugin.classmodifier;
+package me.joy.scalpelplugin.vest;
 
 /**
  * Created by Joy on 2020-04-03
@@ -10,6 +10,7 @@ public class ClassModification {
 
   private String methodPrefix;
   private String methodSuffix;
+  private String rootProjectJavaPath;
 
   public String getClassPrefix() {
     return classPrefix;

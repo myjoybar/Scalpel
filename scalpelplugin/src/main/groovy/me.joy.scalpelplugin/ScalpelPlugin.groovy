@@ -9,6 +9,7 @@ import me.joy.scalpelplugin.extention.ScalpelExtension
 import me.joy.scalpelplugin.garbagecode.GarbageCodeTransform
 import me.joy.scalpelplugin.logger.AutoLoggerTransform
 import me.joy.scalpelplugin.utils.L
+import me.joy.scalpelplugin.vest.VestTask
 import me.joy.scalpelplugin.viewclick.ViewClickTransform
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -37,9 +38,9 @@ public class ScalpelPlugin implements Plugin<Project> {
                 project.extensions.create(Constant.GARBAGE_CONFIG, GarbageConfigExtension)
                 scalpelExtension = project.extensions.findByType(ScalpelExtension.class)
                 garbageConfigExtension = project.extensions.findByType(GarbageConfigExtension.class)
-                //registerAutoLoggerTransform(baseExtension)
-                // registerViewClickTransform(baseExtension)
-                // registerCostTimeTransformTransform(baseExtension)
+                registerAutoLoggerTransform(baseExtension)
+                registerViewClickTransform(baseExtension)
+                registerCostTimeTransformTransform(baseExtension)
                 registerClassModifierTransform(baseExtension)
                 project.afterEvaluate {
                     ConfigHelper.instance.setScalpelExtension(scalpelExtension);
@@ -48,6 +49,8 @@ public class ScalpelPlugin implements Plugin<Project> {
                 }
             }
         }
+
+        registerVestTask(project);
 
 
     }
@@ -66,6 +69,12 @@ public class ScalpelPlugin implements Plugin<Project> {
 
     private void registerClassModifierTransform(BaseExtension baseExtension) {
         baseExtension.registerTransform(new GarbageCodeTransform())
+    }
+
+    private void registerVestTask(Project project) {
+        // gradle vestTask
+       project.task('vestTask', type: VestTask)
+
     }
 }
 
