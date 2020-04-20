@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import me.joy.scalpelplugin.extention.ConfigHelper;
 import me.joy.scalpelplugin.utils.L;
 import org.dom4j.Document;
@@ -39,6 +40,7 @@ public class VestTask extends DefaultTask {
 
   public Map<String, String> activityNamesMap = new HashMap<>();
   public Map<String, String> applicationNamesMap = new HashMap<>();
+  Map<String, String> confusePckMap = new HashMap<>();
 
 
   public static String BLANK_SPACE = " ";
@@ -140,16 +142,61 @@ public class VestTask extends DefaultTask {
     L.print(TAG, " the origin fileName:" + originFileName);
 
     int index = originFileAbsolutePath.indexOf(originFileName);
-    String newFileAbsolutePath =
-        originFileAbsolutePath.substring(0, index) + getPrefixStr(originFileName) + originFileName;
+    String signal = "/main/java/";
+    int signalIndex = originFileAbsolutePath.lastIndexOf(signal);
+    String str1 = originFileAbsolutePath.substring(0, signalIndex);
+    String str2 = originFileAbsolutePath.substring(signalIndex + signal.length());
+    String str3 = originFileAbsolutePath.substring(signalIndex + signal.length(),
+        originFileAbsolutePath.lastIndexOf(originFileName) - 1);
+    String[] pckNames = str3.split("/");
+    Map<String, String> confusePckTempMap = new HashMap<>();
+
+    if (null != pckNames) {
+      int size = pckNames.length;
+      for (int i = 0; i < size; i++) {
+        String oldStr = pckNames[i];
+        String newStr = getRandomStr(3);
+        if (!confusePckMap.containsKey(oldStr)) {
+          confusePckMap.put(oldStr, newStr);
+        }
+        confusePckTempMap.put(oldStr, confusePckMap.get(oldStr));
+
+      }
+    }
+
+    String newPath = originFileAbsolutePath.substring(0, signalIndex) + signal;
+
+    for (Map.Entry<String, String> entry : confusePckTempMap.entrySet()) {
+      String key = entry.getKey();
+      String value = entry.getValue();
+      L.print(TAG, " confusePckTempMap key = " + key);
+      L.print(TAG, " confusePckTempMap value = " + value);
+      newPath = newPath + value + "/";
+
+    }
+    String oldName1 = originFileName.substring(0, originFileName.lastIndexOf("."));
+    newPath = newPath + originFileName.replace(oldName1, getRandomStr(3));
+
+//    L.print(TAG, " str1:" + str1);
+    L.print(TAG, " str2:" + str2);
+    L.print(TAG, " str3:" + str3);
+    L.print(TAG, " newPath:" + newPath);
+    L.print(TAG, " oldName1:" + oldName1);
+
+//    String newFileAbsolutePath =
+//        originFileAbsolutePath.substring(0, index) + getPrefixStr(originFileName) + originFileName;
+
+    String newFileAbsolutePath = newPath;
 
     File newFile = new File(newFileAbsolutePath);
+    if (!newFile.exists()) {
+      newFile.mkdirs();// 能创建多级目录
+    }
 
     String newFileName = newFile.getName();
     L.print(TAG, " the newFilePath :" + newFileAbsolutePath);
     L.print(TAG, " the newFileName :" + newFile.getName());
 
-    String signal = "/main/java/";
     String originPackName = originFileAbsolutePath
         .substring(originFileAbsolutePath.lastIndexOf(signal) + signal.length(),
             originFileAbsolutePath.lastIndexOf(".")).replace("/", ".");
@@ -199,18 +246,16 @@ public class VestTask extends DefaultTask {
 
     L.print(TAG, " originPackName :" + originPackName);
     L.print(TAG, " newPackName :" + newPackName);
-//    boolean b = originFile.renameTo(newFile);
-//    L.print(TAG, "rename the file result:" + b);
+    boolean b = originFile.renameTo(newFile);
+    L.print(TAG, "rename the file result:" + b);
+//    try {
+//      FileUtils.copyFileUsingFileChannels(originFile, newFile);
+//    } catch (IOException e) {
+//      e.printStackTrace();
+//      L.print(TAG, " copyFileUsingFileChannels :" + e.getMessage());
+//    }
 
-  }
 
-
-  private String getPrefixStr(String name) {
-    return "AAA";
-  }
-
-  private String getSuffixStr() {
-    return "BBB";
   }
 
 
@@ -325,5 +370,15 @@ public class VestTask extends DefaultTask {
 
   }
 
+  private static String getRandomStr(int length) {
+    String str = "abcdefghijklmnopqrstuvwxyz";
+    Random random = new Random();
+    StringBuffer sb = new StringBuffer();
+    for (int i = 0; i < length; i++) {
+      int number = random.nextInt(26);
+      sb.append(str.charAt(number));
+    }
+    return sb.toString();
+  }
 
 }
