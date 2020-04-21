@@ -1,5 +1,6 @@
 package me.joy.scalpelplugin.vest;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -97,6 +98,45 @@ public class FileUtils {
     }
 
     return null;
+  }
+
+  /**
+   * 保存文件(文件不存在会自动创建).
+   *
+   * @param path 文件路径
+   * @param content 文件内容
+   */
+  public static void saveFile(String path, String content) {
+    FileOutputStream fileOutputStream = null;
+    BufferedOutputStream bw = null;
+    try {
+      // 获得文件对象
+      File f = new File(path);
+      // 默认编码UTF-8
+      // 如果路径不存在,则创建
+      if (!f.getParentFile().exists()) {
+        f.getParentFile().mkdirs();
+      }
+      // 开始保存文件
+      fileOutputStream = new FileOutputStream(path);
+      bw = new BufferedOutputStream(fileOutputStream);
+      bw.write(content.getBytes("UTF-8"));
+    } catch (Exception e) {
+      L.print(TAG, "save file error = " + e.getMessage());
+    } finally {
+      if (bw != null) {
+        try {
+          bw.close();
+        } catch (IOException e1) {
+        }
+      }
+      if (fileOutputStream != null) {
+        try {
+          fileOutputStream.close();
+        } catch (IOException e1) {
+        }
+      }
+    }
   }
 
   public static void modifyFileContent(List<String> filePathList, Map<String, String> map) {

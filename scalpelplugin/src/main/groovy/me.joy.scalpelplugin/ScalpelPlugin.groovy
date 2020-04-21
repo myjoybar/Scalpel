@@ -21,6 +21,7 @@ public class ScalpelPlugin implements Plugin<Project> {
 
     ScalpelExtension scalpelExtension;
     GarbageConfigExtension garbageConfigExtension;
+    VestConfigExtension vestConfigExtension;
 
     @Override
     void apply(Project project) {
@@ -38,9 +39,9 @@ public class ScalpelPlugin implements Plugin<Project> {
                 project.extensions.create(Constant.SCALPEL_CONFIG, ScalpelExtension)
                 project.extensions.create(Constant.GARBAGE_CONFIG, GarbageConfigExtension)
                 project.extensions.create(Constant.VEST_CONFIG, VestConfigExtension)
-
                 scalpelExtension = project.extensions.findByType(ScalpelExtension.class)
                 garbageConfigExtension = project.extensions.findByType(GarbageConfigExtension.class)
+                vestConfigExtension = project.extensions.findByType(VestConfigExtension.class)
                 registerAutoLoggerTransform(baseExtension)
                 registerViewClickTransform(baseExtension)
                 registerCostTimeTransformTransform(baseExtension)
@@ -48,6 +49,7 @@ public class ScalpelPlugin implements Plugin<Project> {
                 project.afterEvaluate {
                     ConfigHelper.instance.setScalpelExtension(scalpelExtension);
                     ConfigHelper.instance.setGarbageConfigExtension(garbageConfigExtension);
+                    ConfigHelper.instance.setVestConfigExtension(vestConfigExtension);
 
                 }
             }

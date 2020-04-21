@@ -43,8 +43,8 @@ public class VestTask extends DefaultTask {
   private Map<String, String> manifestPackageNamesMap = new HashMap<>();
 
   private Map<String, String> confusePckMap = new HashMap<>();
-  private Map<String, String> mapFiles = new LinkedHashMap<>();
-
+  private Map<String, String> mapFilesInfos = new LinkedHashMap<>();
+  private String mapFilePath = "";
 
   private static final String BLANK_SPACE = " ";
   private static final String LEFT_BRACKET1 = "(";
@@ -65,12 +65,15 @@ public class VestTask extends DefaultTask {
   private void execute() {
     String rootProjectDirPath = getProject().getRootProject().getRootDir().getAbsolutePath();
     // eg:  /Users/joybar/Documents/WorkSpaces/AndroidStudio/My/Scalpel
-    L.print(TAG, "this rootProjectDirPath: " + rootProjectDirPath);
+    L.print(TAG, "this rootProjectDirPath = " + rootProjectDirPath);
     List<String> vestModules = ConfigHelper.getInstance().getVestConfigExtension().vestModules();
     int size = vestModules.size();
     for (int i = 0; i < size; i++) {
+      // clear map todo
       String pathOuter = rootProjectDirPath + "/" + vestModules.get(i) + "/src/main/";
       String pathInner = rootProjectDirPath + "/" + vestModules.get(i) + "/src/main/java";
+      mapFilePath =
+          rootProjectDirPath + "/" + vestModules.get(i) + "/build/outputs/vest/vestMap.txt";
       //eg: String path = "/Users/joybar/Documents/WorkSpaces/AndroidStudio/My/Scalpel/app/src/main/java";
       L.print(TAG, "this pathOuter: " + pathOuter);
       L.print(TAG, "this pathInner: " + pathInner);
@@ -79,8 +82,9 @@ public class VestTask extends DefaultTask {
       renameClassAndKtFiles(pathInner);
       recordManifestFileModifyContent();
       modifyFiles();
-      printMap(confusePckMap);
-      printMap(mapFiles);
+//      printMap(confusePckMap);
+//      printMap(mapFilesInfos);
+      saveMapFile(mapFilePath, mapFilesInfos);
     }
 
   }
@@ -245,7 +249,9 @@ public class VestTask extends DefaultTask {
     classReflectMap.put(oldFileSimpleName + CLASS, newFileSimpleName + CLASS);
     classReflectMap.put(oldFileSimpleName + CLASS_KOTLIN, newFileSimpleName + CLASS_KOTLIN);
     newJavaOrKotlinFilePathList.add(newFile.getAbsolutePath());
-    mapFiles.put(originFile.getAbsolutePath(), newFile.getAbsolutePath());
+    mapFilesInfos.put(
+        originFile.getAbsolutePath().substring(originFile.getAbsolutePath().lastIndexOf(signal)),
+        newFile.getAbsolutePath().substring(newFile.getAbsolutePath().lastIndexOf(signal)));
     boolean b = originFile.renameTo(newFile);
     L.print(TAG, "rename the file result:" + b);
 
@@ -383,5 +389,22 @@ public class VestTask extends DefaultTask {
       L.print(TAG, " map key = " + key + ",  value = " + value);
     }
   }
+
+
+  private void saveMapFile(String filePath, Map<String, String> map) {
+
+    StringBuilder stringBuilder = new StringBuilder();
+    for (Map.Entry<String, String> entry : map.entrySet()) {
+      String key = entry.getKey();
+      String value = entry.getValue();
+      L.print(TAG, " map key = " + key + ",  value = " + value);
+      stringBuilder.append(key);
+      stringBuilder.append("  -->  ");
+      stringBuilder.append(value);
+      stringBuilder.append("\r\n");
+    }
+    FileUtils.saveFile(filePath, stringBuilder.toString());
+  }
+
 
 }
