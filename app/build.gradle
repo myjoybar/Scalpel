@@ -49,7 +49,9 @@ ScalpelConfig {
     enableViewClickTrace false
     enableMethodCostTime false
     enableModification true
-    vestModules modules
+    VestConfig {
+        vestModules modules
+    }
     GarbageConfig {
         enableGarbageCode false
         handleInnerClass false

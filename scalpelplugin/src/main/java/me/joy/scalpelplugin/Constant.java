@@ -9,6 +9,7 @@ import java.util.Map;
 public class Constant {
   public static final String SCALPEL_CONFIG =  "ScalpelConfig";
   public static final String GARBAGE_CONFIG =  "GarbageConfig";
+  public static final String VEST_CONFIG =  "VestConfig";
 
   public static final String LOG_TRACE_METHOD_ANNOTATION = "Lme/joy/scalpel/annotation/LogTrace;";
   public static final String METHOD_COST_TIME_HELPER_CLASS_OWNER = "me/joy/scalpel/helper/logger/MethodCostTimeHelper";

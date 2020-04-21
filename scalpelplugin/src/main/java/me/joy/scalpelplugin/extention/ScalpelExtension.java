@@ -1,9 +1,6 @@
 package me.joy.scalpelplugin.extention;
 
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Created by Joy on 2019-08-15
  */
@@ -15,7 +12,6 @@ public class ScalpelExtension {
   private boolean enableViewClickTrace = false;
   private boolean enableModification = false;
   private boolean enableMethodCostTime = false;
-  private List<String> vestModules = new ArrayList<>();
 
 
   public void enable(boolean enable) {
@@ -71,14 +67,6 @@ public class ScalpelExtension {
   }
 
 
-  public void vestModules(List<String> vestModules) {
-    this.vestModules = vestModules;
-  }
-
-
-  public List<String> vestModules() {
-    return this.vestModules;
-  }
 
 //  public GarbageConfigExtension garbageConfig() {
 //    return garbageConfig;

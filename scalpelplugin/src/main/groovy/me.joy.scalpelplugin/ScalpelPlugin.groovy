@@ -6,6 +6,7 @@ import me.joy.scalpelplugin.costtime.CostTimeTransform
 import me.joy.scalpelplugin.extention.ConfigHelper
 import me.joy.scalpelplugin.extention.GarbageConfigExtension
 import me.joy.scalpelplugin.extention.ScalpelExtension
+import me.joy.scalpelplugin.extention.VestConfigExtension
 import me.joy.scalpelplugin.garbagecode.GarbageCodeTransform
 import me.joy.scalpelplugin.logger.AutoLoggerTransform
 import me.joy.scalpelplugin.utils.L
@@ -36,6 +37,8 @@ public class ScalpelPlugin implements Plugin<Project> {
                 BaseExtension baseExtension = (BaseExtension) project.getExtensions().getByName("android");
                 project.extensions.create(Constant.SCALPEL_CONFIG, ScalpelExtension)
                 project.extensions.create(Constant.GARBAGE_CONFIG, GarbageConfigExtension)
+                project.extensions.create(Constant.VEST_CONFIG, VestConfigExtension)
+
                 scalpelExtension = project.extensions.findByType(ScalpelExtension.class)
                 garbageConfigExtension = project.extensions.findByType(GarbageConfigExtension.class)
                 registerAutoLoggerTransform(baseExtension)
