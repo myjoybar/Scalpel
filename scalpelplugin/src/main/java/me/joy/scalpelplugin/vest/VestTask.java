@@ -1,6 +1,10 @@
 package me.joy.scalpelplugin.vest;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,6 +15,7 @@ import java.util.Map;
 import java.util.Random;
 import me.joy.scalpelplugin.extention.ConfigHelper;
 import me.joy.scalpelplugin.utils.L;
+import org.apache.http.util.TextUtils;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
@@ -29,6 +34,7 @@ public class VestTask extends DefaultTask {
   public VestTask() {
     setGroup("Vest");
   }
+
   @TaskAction
   public void doVestTask() {
     execute();
@@ -91,7 +97,10 @@ public class VestTask extends DefaultTask {
   private static final String EQUALS = "=";
   private static final String PLUS = "+";
   private static final String SIGN1 = "||";
-
+  private static boolean useMapping = false;
+  private static File mappingFile;
+  private static String mappingPrefix;
+  private static final List<String> excludeFiles = new ArrayList<>();
 
   public static void main(String[] args) {
     L.print(TAG, "this rootProjectDirPath = ");
@@ -105,25 +114,43 @@ public class VestTask extends DefaultTask {
     L.print(TAG, "this rootProjectDirPath = " + rootProjectDirPath);
     // List<String> vestModules = ConfigHelper.getInstance().getVestConfigExtension().vestModules();
     List<String> vestModules = ConfigHelper.getInstance().getVestConfigExtension().vestModules();
+    excludeFiles.addAll(ConfigHelper.getInstance().getVestConfigExtension().excludeFiles());
+    useMapping = ConfigHelper.getInstance().getVestConfigExtension().isUseMapping();
+    mappingPrefix = ConfigHelper.getInstance().getVestConfigExtension().getMappingPrefix();
     int size = vestModules.size();
     for (int i = 0; i < size; i++) {
       // clear map todo
 //      String pathOuter = rootProjectDirPath + "/" + vestModules.get(i) + "/src/main/";
 //      String pathInner = rootProjectDirPath + "/" + vestModules.get(i) + "/src/main/java";
 
-      String pathOuter = rootProjectDirPath + "/" + vestModules.get(i) + "/src/main/";
-      String pathInner = rootProjectDirPath + "/" + vestModules.get(i) + "/src/main/java";
+      String pathOuter =
+              rootProjectDirPath + File.separator + vestModules.get(i) + File.separator + "src"
+                      + File.separator + "main" + File.separator;
+      String pathInner =
+              rootProjectDirPath + File.separator + vestModules.get(i) + File.separator + "src"
+                      + File.separator + "main" + File.separator + "java";
+      if (TextUtils.isEmpty(mappingPrefix)) {
+        mappingPrefix = "";
+      }
+      mappingFile = new File(
+              rootProjectDirPath + File.separator + vestModules.get(i) + File.separator + "vest"
+                      + File.separator + "vestMap" + mappingPrefix
+                      + ".txt");
 
+      if (!mappingFile.exists()) {
+        useMapping = false;
+      }
       mapFilePath =
-          rootProjectDirPath + "/" + vestModules.get(i) + "/vest/vestMap" + getCurrentTime()
-              + ".txt";
+              rootProjectDirPath + File.separator + vestModules.get(i) + File.separator + "vest"
+                      + File.separator + "vestMap" + mappingPrefix + getCurrentTime()
+                      + ".txt";
       //eg: String path = "/Users/joybar/Documents/WorkSpaces/AndroidStudio/My/Scalpel/app/src/main/java";
       L.print(TAG, "this pathOuter: " + pathOuter);
       L.print(TAG, "this pathInner: " + pathInner);
-      findAllAndroidManifestFilePath(pathOuter);
-      findPckNameApplicationNameAndActivityNames();
+//      findAllAndroidManifestFilePath(pathOuter);
+//      findPckNameApplicationNameAndActivityNames();
       renameClassAndKtFiles(pathInner);
-      recordManifestFileModifyContent();
+//      recordManifestFileModifyContent();
       modifyFiles();
 //      printMap(confusePckMap);
 //      printMap(mapFilesInfos);
@@ -189,26 +216,68 @@ public class VestTask extends DefaultTask {
   }
 
   private void recordConfusePckMap(String simpleOriginFileAbsolutePath,
-      Map<String, String> confusePckTempMap) {
-    String[] pckNames = simpleOriginFileAbsolutePath.split("/");
+                                   Map<String, String> confusePckTempMap) {
+    String[] pckNames = null;
+    if (File.separator.equals("\\")) {
+      pckNames = simpleOriginFileAbsolutePath.split("\\\\");
+    } else {
+      pckNames = simpleOriginFileAbsolutePath.split(File.separator);
+    }
     int size = pckNames.length;
     for (int i = 0; i < size; i++) {
       String oldStr = pckNames[i];
       if (!confusePckMap.containsKey(oldStr)) {
-        String newStr = getRandomStr(4);
+        String newStr = getRandomStr(oldStr.length());
+        if (useMapping) {
+          newStr = findMappingAndReplace(oldStr, pckNames);
+        }
         confusePckMap.put(oldStr, newStr);
       }
       confusePckTempMap.put(oldStr, confusePckMap.get(oldStr));
     }
   }
 
+  private boolean isFindAll(String[] pckNames, String content) {
+    for (int i = 0; i < pckNames.length; i++) {
+      if (!content.contains(pckNames[i])) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  private String findMappingAndReplace(String name, String[] pckNames) {
+    BufferedReader reader = null;
+    try {
+      reader = new BufferedReader(new InputStreamReader(new FileInputStream(mappingFile), "utf-8"));
+      String content;
+
+      while ((content = reader.readLine()) != null) {
+
+        String readers[] = content.split("  -->  ");
+        if (!isFindAll(pckNames, readers[0])) {
+          return getRandomStr(name.length());
+        }
+
+        int index = readers[0].lastIndexOf("." + name + ".");
+        if (index != -1) {
+          return readers[1].substring(index + 1, index + 1 + name.length());
+        }
+      }
+
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    return getRandomStr(name.length());
+  }
+
   private String generateNewFilePath(String originFileAbsolutePath,
-      String signal, int signalIndex, Map<String, String> confusePckTempMap) {
+                                     String signal, int signalIndex, Map<String, String> confusePckTempMap) {
     String newFilePath = originFileAbsolutePath.substring(0, signalIndex) + signal;
     for (Map.Entry<String, String> entry : confusePckTempMap.entrySet()) {
       String key = entry.getKey();
       String value = entry.getValue();
-      newFilePath = newFilePath + value + "/";
+      newFilePath = newFilePath + value + File.separator;
     }
     return newFilePath;
   }
@@ -222,22 +291,24 @@ public class VestTask extends DefaultTask {
     L.print(TAG, " the originFileAbsolutePath = " + originFileAbsolutePath);
     L.print(TAG, " the originFileName = " + originFileName);
 
-    String signal = "/main/java/";
+    String signal = File.separator + "main" + File.separator + "java" + File.separator;
     int signalIndex = originFileAbsolutePath.lastIndexOf(signal);
+    L.print(TAG, " the simpleOriginFileAbsolutePath = " + signalIndex);
+
     String simpleOriginFileAbsolutePath = originFileAbsolutePath
-        .substring(signalIndex + signal.length(),
-            originFileAbsolutePath.lastIndexOf(originFileName) - 1);
+            .substring(signalIndex + signal.length(),
+                    originFileAbsolutePath.lastIndexOf(originFileName) - 1);
     L.print(TAG, " the simpleOriginFileAbsolutePath = " + simpleOriginFileAbsolutePath);
 
     Map<String, String> confusePckTempMap = new LinkedHashMap<>();
     recordConfusePckMap(simpleOriginFileAbsolutePath, confusePckTempMap);
     String newFilePath = generateNewFilePath(originFileAbsolutePath, signal, signalIndex,
-        confusePckTempMap);
+            confusePckTempMap);
     //Test1
     String oldFileName = originFileName.substring(0, originFileName.lastIndexOf("."));
     // /Users/joybar/Documents/WorkSpaces/AndroidStudio/My/Scalpel/app/src/main/java/fao/jmo/spb/qku/lcb.java
     newFilePath =
-        newFilePath + originFileName.replace(oldFileName, generateNewFileName(oldFileName));
+            newFilePath + originFileName.replace(oldFileName, generateNewFileName(oldFileName));
 
     L.print(TAG, " originFileName = " + originFileName);
     L.print(TAG, " simpleOriginFileAbsolutePath = " + simpleOriginFileAbsolutePath);
@@ -245,7 +316,9 @@ public class VestTask extends DefaultTask {
     L.print(TAG, " oldFileName = " + oldFileName);
 
     String newFileAbsolutePath = newFilePath;
-    String newFileAbsolutePathDir = newFilePath.substring(0, newFilePath.lastIndexOf("/") + 1);
+
+    String newFileAbsolutePathDir = newFilePath
+            .substring(0, newFilePath.lastIndexOf(File.separator) + 1);
     L.print(TAG, " newFileAbsolutePath = " + newFileAbsolutePath);
     L.print(TAG, " newFileAbsolutePathDir = " + newFileAbsolutePathDir);
     FileUtils.createDirectory(newFileAbsolutePathDir);
@@ -256,11 +329,11 @@ public class VestTask extends DefaultTask {
     L.print(TAG, " the newFileFullName :" + newFile.getName());
 
     String originClassPackName = originFileAbsolutePath
-        .substring(originFileAbsolutePath.lastIndexOf(signal) + signal.length(),
-            originFileAbsolutePath.lastIndexOf(".")).replace("/", ".");
+            .substring(originFileAbsolutePath.lastIndexOf(signal) + signal.length(),
+                    originFileAbsolutePath.lastIndexOf(".")).replace(File.separator, ".");
     String newClassPackName = newFileAbsolutePath
-        .substring(newFileAbsolutePath.lastIndexOf(signal) + signal.length(),
-            newFileAbsolutePath.lastIndexOf(".")).replace("/", ".");
+            .substring(newFileAbsolutePath.lastIndexOf(signal) + signal.length(),
+                    newFileAbsolutePath.lastIndexOf(".")).replace(File.separator, ".");
     String oldFileSimpleName = originFileName.substring(0, originFileName.lastIndexOf("."));
     String newFileSimpleName = newFileFullName.substring(0, newFileFullName.lastIndexOf("."));
     String oldPackName = originClassPackName.substring(0, originClassPackName.lastIndexOf("."));
@@ -280,14 +353,14 @@ public class VestTask extends DefaultTask {
     pkgNameMap.put(PACKAGE + oldPackName + N, PACKAGE + newPackName + N);
 
     importPkNameMap
-        .put(IMPORT + originClassPackName + SEMICOLON, IMPORT + newClassPackName + SEMICOLON);
+            .put(IMPORT + originClassPackName + SEMICOLON, IMPORT + newClassPackName + SEMICOLON);
     importPkNameMap.put(IMPORT + originClassPackName + R, IMPORT + newClassPackName + R);
     importPkNameMap.put(IMPORT + originClassPackName + N, IMPORT + newClassPackName + N);
     importPkNameMap.put(IMPORT + originClassPackName + DOT, IMPORT + newClassPackName + DOT);
 //        importPkNameMap.put(IMPORT + originClassPackName + BLANK_SPACE, IMPORT + newClassPackName + BLANK_SPACE);
 //        importPkNameMap.put(IMPORT + originClassPackName, IMPORT + newClassPackName);
     importPkNameMap
-        .put(IMPORT2 + originClassPackName + SEMICOLON, IMPORT2 + newClassPackName + SEMICOLON);
+            .put(IMPORT2 + originClassPackName + SEMICOLON, IMPORT2 + newClassPackName + SEMICOLON);
     importPkNameMap.put(IMPORT2 + originClassPackName + R, IMPORT2 + newClassPackName + R);
     importPkNameMap.put(IMPORT2 + originClassPackName + N, IMPORT2 + newClassPackName + N);
     importPkNameMap.put(IMPORT2 + originClassPackName + DOT, IMPORT2 + newClassPackName + DOT);
@@ -297,82 +370,82 @@ public class VestTask extends DefaultTask {
     importPkNameForManifestMap.put(originClassPackName, newClassPackName);
 
     classNameMap.put(BLANK_SPACE + oldFileSimpleName + BLANK_SPACE,
-        BLANK_SPACE + newFileSimpleName + BLANK_SPACE);
+            BLANK_SPACE + newFileSimpleName + BLANK_SPACE);
     classNameMap.put(BLANK_SPACE + oldFileSimpleName + LEFT_ANGLE_BRACKETS,
-        BLANK_SPACE + newFileSimpleName + LEFT_ANGLE_BRACKETS);
+            BLANK_SPACE + newFileSimpleName + LEFT_ANGLE_BRACKETS);
     classNameMap.put(LEFT_BRACKET1 + oldFileSimpleName + BLANK_SPACE,
-        LEFT_BRACKET1 + newFileSimpleName + BLANK_SPACE);
+            LEFT_BRACKET1 + newFileSimpleName + BLANK_SPACE);
     classNameMap.put(LEFT_BRACKET1 + oldFileSimpleName + RIGHT_BRACKET1,
-        LEFT_BRACKET1 + newFileSimpleName + RIGHT_BRACKET1);
+            LEFT_BRACKET1 + newFileSimpleName + RIGHT_BRACKET1);
 
     classNameMap.put(COMMA + oldFileSimpleName + DOT,
-        COMMA + newFileSimpleName + DOT);
+            COMMA + newFileSimpleName + DOT);
     classNameMap.put(EXCLAMATION_MAR + oldFileSimpleName + DOT,
-        EXCLAMATION_MAR + newFileSimpleName + DOT);
+            EXCLAMATION_MAR + newFileSimpleName + DOT);
     classNameMap.put(QUESTION + oldFileSimpleName + DOT,
-        QUESTION + newFileSimpleName + DOT);
+            QUESTION + newFileSimpleName + DOT);
     classNameMap.put(EQUALS + oldFileSimpleName + DOT,
-        EQUALS + newFileSimpleName + DOT);
+            EQUALS + newFileSimpleName + DOT);
     classNameMap.put(PLUS + oldFileSimpleName + DOT,
-        PLUS + newFileSimpleName + DOT);
+            PLUS + newFileSimpleName + DOT);
     classNameMap.put(SIGN1 + oldFileSimpleName + DOT,
-        SIGN1 + newFileSimpleName + DOT);
+            SIGN1 + newFileSimpleName + DOT);
 
     classNameMap.put(LEFT_BRACKET1 + oldFileSimpleName + DOT,
-        LEFT_BRACKET1 + newFileSimpleName + DOT);
+            LEFT_BRACKET1 + newFileSimpleName + DOT);
 
     classNameMap.put(COMMA + oldFileSimpleName + BLANK_SPACE,
-        COMMA + newFileSimpleName + BLANK_SPACE);
+            COMMA + newFileSimpleName + BLANK_SPACE);
 
     classNameMap.put(BLANK_SPACE + oldFileSimpleName + R,
-        BLANK_SPACE + newFileSimpleName + R);
+            BLANK_SPACE + newFileSimpleName + R);
 
     classNameMap.put(BLANK_SPACE + oldFileSimpleName + N,
-        BLANK_SPACE + newFileSimpleName + N);
+            BLANK_SPACE + newFileSimpleName + N);
 
     classNewObjMap
-        .put(BLANK_SPACE + oldFileSimpleName + LEFT_BRACKET1,
-            BLANK_SPACE + newFileSimpleName + LEFT_BRACKET1);
+            .put(BLANK_SPACE + oldFileSimpleName + LEFT_BRACKET1,
+                    BLANK_SPACE + newFileSimpleName + LEFT_BRACKET1);
     classNewObjMap
-        .put(LEFT_BRACKET1 + oldFileSimpleName + LEFT_BRACKET1,
-            LEFT_BRACKET1 + newFileSimpleName + LEFT_BRACKET1);
+            .put(LEFT_BRACKET1 + oldFileSimpleName + LEFT_BRACKET1,
+                    LEFT_BRACKET1 + newFileSimpleName + LEFT_BRACKET1);
 
     classStaticRefMap
-        .put(BLANK_SPACE + oldFileSimpleName + DOT, BLANK_SPACE + newFileSimpleName + DOT);
+            .put(BLANK_SPACE + oldFileSimpleName + DOT, BLANK_SPACE + newFileSimpleName + DOT);
     classStaticRefMap
-        .put(LEFT_BRACKET1 + oldFileSimpleName + DOT, LEFT_BRACKET1 + newFileSimpleName + DOT);
+            .put(LEFT_BRACKET1 + oldFileSimpleName + DOT, LEFT_BRACKET1 + newFileSimpleName + DOT);
 
 //        classStaticRefMap
 //                .put(oldFileSimpleName + DOT, newFileSimpleName + DOT);
     // classReflectMap.put(BLANK_SPACE+oldFileSimpleName + CLASS, BLANK_SPACE+newFileSimpleName + CLASS);
     classReflectMap
-        .put(LEFT_BRACKET1 + oldFileSimpleName + CLASS, LEFT_BRACKET1 + newFileSimpleName + CLASS);
+            .put(LEFT_BRACKET1 + oldFileSimpleName + CLASS, LEFT_BRACKET1 + newFileSimpleName + CLASS);
 
     classKotlinMap.put(COLON1 + oldFileSimpleName, COLON1 + newFileSimpleName);
     classKotlinMap.put(COLON2 + oldFileSimpleName, COLON2 + newFileSimpleName);
     classKotlinMap.put(KOTLIN_THIS + oldFileSimpleName, KOTLIN_THIS + newFileSimpleName);
     classKotlinMap
-        .put(BLANK_SPACE + oldFileSimpleName + COLON1, BLANK_SPACE + newFileSimpleName + COLON1);
+            .put(BLANK_SPACE + oldFileSimpleName + COLON1, BLANK_SPACE + newFileSimpleName + COLON1);
 
     classReflectMap.put(oldFileSimpleName + CLASS_KOTLIN, newFileSimpleName + CLASS_KOTLIN);
 
     tMap.put(LEFT_ANGLE_BRACKETS + oldFileSimpleName + RIGHT_ANGLE_BRACKETS,
-        LEFT_ANGLE_BRACKETS + newFileSimpleName + RIGHT_ANGLE_BRACKETS);
+            LEFT_ANGLE_BRACKETS + newFileSimpleName + RIGHT_ANGLE_BRACKETS);
 
     tMap.put(LEFT_ANGLE_BRACKETS + oldFileSimpleName + LEFT_ANGLE_BRACKETS,
-        LEFT_ANGLE_BRACKETS + newFileSimpleName + LEFT_ANGLE_BRACKETS);
+            LEFT_ANGLE_BRACKETS + newFileSimpleName + LEFT_ANGLE_BRACKETS);
 
     tMap.put(LEFT_ANGLE_BRACKETS + oldFileSimpleName + DOT,
-        LEFT_ANGLE_BRACKETS + newFileSimpleName + DOT);
+            LEFT_ANGLE_BRACKETS + newFileSimpleName + DOT);
 
     tMap.put(LEFT_ANGLE_BRACKETS + oldFileSimpleName + COMMA,
-        LEFT_ANGLE_BRACKETS + newFileSimpleName + COMMA);
+            LEFT_ANGLE_BRACKETS + newFileSimpleName + COMMA);
 
     tMap.put(COMMA + oldFileSimpleName + RIGHT_ANGLE_BRACKETS,
-        COMMA + newFileSimpleName + RIGHT_ANGLE_BRACKETS);
+            COMMA + newFileSimpleName + RIGHT_ANGLE_BRACKETS);
 
     tMap.put(COMMA + BLANK_SPACE + oldFileSimpleName + RIGHT_ANGLE_BRACKETS,
-        COMMA + BLANK_SPACE + newFileSimpleName + RIGHT_ANGLE_BRACKETS);
+            COMMA + BLANK_SPACE + newFileSimpleName + RIGHT_ANGLE_BRACKETS);
 
 //        tMap.put(oldFileSimpleName + T,newFileSimpleName + T);
     tMap.put(LEFT_BRACKET1 + oldFileSimpleName + T, LEFT_BRACKET1 + newFileSimpleName + T);
@@ -383,17 +456,26 @@ public class VestTask extends DefaultTask {
 
     newJavaOrKotlinFilePathList.add(newFile.getAbsolutePath());
     mapFilesInfos.put(
-        originFile.getAbsolutePath().substring(originFile.getAbsolutePath().lastIndexOf(signal)),
-        newFile.getAbsolutePath().substring(newFile.getAbsolutePath().lastIndexOf(signal)));
-    boolean b = originFile.renameTo(newFile);
-    L.print(TAG, "rename the file result:" + b);
+            originFile.getAbsolutePath().substring(originFile.getAbsolutePath().lastIndexOf(signal)),
+            newFile.getAbsolutePath().substring(newFile.getAbsolutePath().lastIndexOf(signal)));
+//    FileUtils.copyFileToDirectory(File,File)
+//    boolean b = originFile.renameTo(newFile);
+    L.print(TAG, "rename the file originFile:" + originFile);
+    L.print(TAG, "rename the file newFile:" + newFile);
+    try {
+      FileUtils.copyFileUsingFileChannels(originFile, newFile);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+
+//    L.print(TAG, "rename the file result:" + b);
 
   }
 
 
   private void recordManifestFileModifyContent() {
     Iterator<Map.Entry<String, String>> iterator = importPkNameForManifestMap.entrySet()
-        .iterator();
+            .iterator();
     while (iterator.hasNext()) {
       Map.Entry<String, String> entry = iterator.next();
       String key = entry.getKey();
@@ -406,11 +488,11 @@ public class VestTask extends DefaultTask {
   }
 
   private void recordManifestFileModifyContent(String originClassPackName, String newClassPackName,
-      Map<String, String> map) {
+                                               Map<String, String> map) {
     L.print(TAG, "recordManifestFileModifyContent originClassPackName = " + originClassPackName
-        + " ,newClassPackName = " + newClassPackName);
+            + " ,newClassPackName = " + newClassPackName);
     Iterator<Map.Entry<String, String>> iterator = map.entrySet()
-        .iterator();
+            .iterator();
     while (iterator.hasNext()) {
       Map.Entry<String, String> entry = iterator.next();
       String key = entry.getKey();
@@ -421,7 +503,7 @@ public class VestTask extends DefaultTask {
         String[] keyNames = key.split("\\.");
         String[] newValues = new String[keyNames.length];
         for (int i = originClassPackNames.length - 1, j = keyNames.length - 1; i >= 0 && j >= 0;
-            i--, j--) {
+             i--, j--) {
           if (originClassPackNames[i].equals(keyNames[j])) {
             newValues[j] = newClassPackNames[i];
           }
@@ -446,7 +528,7 @@ public class VestTask extends DefaultTask {
 
   private void recordManifestFileModifyContent(Map<String, String> map) {
     Iterator<Map.Entry<String, String>> iterator = map.entrySet()
-        .iterator();
+            .iterator();
     while (iterator.hasNext()) {
       Map.Entry<String, String> entry = iterator.next();
       String key = entry.getKey();
@@ -468,7 +550,7 @@ public class VestTask extends DefaultTask {
       }
       replaceValue = replaceValue.substring(0, replaceValue.length() - 1);
       L.print(TAG,
-          "recordManifestFileModifyContent map key = " + key + " ,replaceValue = " + replaceValue);
+              "recordManifestFileModifyContent map key = " + key + " ,replaceValue = " + replaceValue);
       map.put(key, replaceValue);
       importPkNameMap.put(key + ".R", replaceValue + ".R");
       importPkNameMap.put(key + ".BuildConfig", replaceValue + ".BuildConfig");
@@ -478,7 +560,7 @@ public class VestTask extends DefaultTask {
 
   boolean canRenameFile(String fileName) {
     return (fileName.endsWith(".java")
-        || fileName.endsWith(".kt")
+            || fileName.endsWith(".kt")
     );
   }
 
@@ -530,6 +612,9 @@ public class VestTask extends DefaultTask {
     if (originName.contains("Application") || originName.contains("application")) {
       return getRandomStr(4) + "Application";
     }
+    if (excludeFiles.contains(originName)) {
+      return originName;
+    }
     return getRandomStr(4);
 
 
@@ -552,9 +637,9 @@ public class VestTask extends DefaultTask {
       String key = entry.getKey();
       String value = entry.getValue();
       L.print(TAG, " map key = " + key + ",  value = " + value);
-      stringBuilder.append(key.replace("/", "."));
+      stringBuilder.append(key.replace(File.separator, "."));
       stringBuilder.append("  -->  ");
-      stringBuilder.append(value.replace("/", "."));
+      stringBuilder.append(value.replace(File.separator, "."));
       stringBuilder.append("\r\n");
     }
     FileUtils.saveFile(filePath, stringBuilder.toString());

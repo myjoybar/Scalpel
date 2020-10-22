@@ -1,0 +1,9 @@
+.main.java.me.joy.scalpelasm.application.AopApplication.java  -->  .main.java.ywxf.zplj.zmff.tmlm.qmhhApplication.java
+.main.java.me.joy.scalpelasm.MainActivity.kt  -->  .main.java.ywxf.zplj.zmff.huidActivity.kt
+.main.java.me.joy.scalpelasm.MainActivityPlugin.java  -->  .main.java.ywxf.zplj.zmff.canjActivity.java
+.main.java.me.joy.scalpelasm.ScalpelExecutorDelegate.java  -->  .main.java.ywxf.zplj.zmff.bbgt.java
+.main.java.me.joy.scalpelasm.test.Test.java  -->  .main.java.ywxf.zplj.zmff.lzsn.mghg.java
+.main.java.me.joy.scalpelasm.test.TestActivity.java  -->  .main.java.ywxf.zplj.zmff.lzsn.mtnuActivity.java
+.main.java.me.joy.scalpelasm.test.TestSingleInstance.java  -->  .main.java.ywxf.zplj.zmff.lzsn.drsv.java
+.main.java.me.joy.scalpelasm.testrename.tes2.Test2.java  -->  .main.java.ywxf.zplj.zmff.pagu.heqz.myfb.java
+.main.java.me.joy.scalpelasm.testrename.Test1.java  -->  .main.java.ywxf.zplj.zmff.pagu.tskd.java

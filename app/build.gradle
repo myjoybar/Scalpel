@@ -45,17 +45,11 @@ apply plugin: 'scalpel-plugin' // scalpel_plugin.properties
 // ScalpelConfig 名字和Constant.SCALPEL_CONFIG对应
 ScalpelConfig {
     enable true
-    enableLog true
-    enableViewClickTrace false
-    enableMethodCostTime false
     enableModification true
-    VestConfig {
-        vestModules modules
-    }
     GarbageConfig {
-        enableGarbageCode false
+        enableGarbageCode true
         handleInnerClass false
-        garbageCodeInjectRatio 1
+        garbageCodeInjectRatio 0.1
         garbageType 'C'
 
     }

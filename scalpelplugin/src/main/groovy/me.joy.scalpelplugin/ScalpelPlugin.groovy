@@ -2,6 +2,7 @@ package me.joy.scalpelplugin
 
 import com.android.build.gradle.AppPlugin
 import com.android.build.gradle.BaseExtension
+import com.android.build.gradle.LibraryPlugin
 import me.joy.scalpelplugin.costtime.CostTimeTransform
 import me.joy.scalpelplugin.extention.ConfigHelper
 import me.joy.scalpelplugin.extention.GarbageConfigExtension
@@ -33,8 +34,8 @@ public class ScalpelPlugin implements Plugin<Project> {
             Plugin plugin = (Plugin) iterator.next();
             L.print(TAG, "plugin ： " + plugin.getClass().getSimpleName());
 //            if(plugin instanceof AppPlugin || plugin instanceof LibraryPlugin || plugin instanceof AndroidBasePlugin){
-            if (plugin instanceof AppPlugin) {
-
+//            if (plugin instanceof AppPlugin) {
+            if (plugin instanceof AppPlugin || plugin instanceof LibraryPlugin) {
                 BaseExtension baseExtension = (BaseExtension) project.getExtensions().getByName("android");
                 project.extensions.create(Constant.SCALPEL_CONFIG, ScalpelExtension)
                 project.extensions.create(Constant.GARBAGE_CONFIG, GarbageConfigExtension)
@@ -45,7 +46,7 @@ public class ScalpelPlugin implements Plugin<Project> {
                 registerAutoLoggerTransform(baseExtension)
                 registerViewClickTransform(baseExtension)
                 registerCostTimeTransformTransform(baseExtension)
-                registerClassModifierTransform(baseExtension)
+                registerClassModifierTransform(baseExtension, plugin instanceof AppPlugin)
                 project.afterEvaluate {
                     ConfigHelper.instance.setScalpelExtension(scalpelExtension);
                     ConfigHelper.instance.setGarbageConfigExtension(garbageConfigExtension);
@@ -72,13 +73,13 @@ public class ScalpelPlugin implements Plugin<Project> {
         baseExtension.registerTransform(new CostTimeTransform())
     }
 
-    private void registerClassModifierTransform(BaseExtension baseExtension) {
-        baseExtension.registerTransform(new GarbageCodeTransform())
+    private void registerClassModifierTransform(BaseExtension baseExtension, boolean AppPlugin) {
+        baseExtension.registerTransform(new GarbageCodeTransform(AppPlugin))
     }
 
     private void registerVestTask(Project project) {
         // gradle vestTask
-       project.task('vestTask', type: VestTask)
+        project.task('vestTask', type: VestTask)
 
     }
 }
